@@ -27,7 +27,10 @@
                         <b><%= listing.title %></b>
                         <span><i class="fa-solid fa-star"></i> 4.8</span>
                       </div>
-                      <p class="listing-location"><%= listing.location %>, <%= listing.country %></p>
+                      <div class="listing-place">
+                        <span><i class="fa-solid fa-location-dot"></i> <%= listing.location || "Location not added" %></span>
+                        <span><i class="fa-solid fa-globe"></i> <%= listing.country || "Country not added" %></span>
+                      </div>
                       <p class="card-text listing-price">&#8377; <%= listing.price.toLocaleString("en-IN") %> <span>/ night</span></p>
                     </div>
                 </article>

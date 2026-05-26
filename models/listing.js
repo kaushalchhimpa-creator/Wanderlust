@@ -7,8 +7,12 @@ const listingSchema = new Schema({
     title: {
       type: String,
       required: true,
+      trim: true,
     },
-    description: String,
+    description: {
+      type: String,
+      trim: true,
+    },
     image: {
          filename: String,
          url: String,
@@ -18,9 +22,11 @@ const listingSchema = new Schema({
     price: Number, 
     location: { 
       type: String,
+      trim: true,
     },
     country:  {  
       type: String,
+      trim: true,
     },
     reviews: [
       {

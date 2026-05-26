@@ -31,26 +31,28 @@ module.exports.showListing = async (req, res) => {
 
 
 module.exports.createListing = async (req, res, next) => {
-
-  // 1. Sabse pehle form se aane wali location ko ek variable mein le lo
-const userLocation = req.body.listing.location; 
-
-// 2. URL ke andar dynamic variable pass kar do (Delhi hata kar)
-const geoRes = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(userLocation)}&limit=1`, { 
-    headers: { 'User-Agent': 'App' } 
-});
-const geoData = await geoRes.json();
-    
-    let response = { body: { features: [] } };
-    if (geoData.length > 0) {
-        response.body.features = [{ geometry: { type: "Point", coordinates: [parseFloat(geoData[0].lon), parseFloat(geoData[0].lat)] } }];
-    }
-
-    console.log(response.body); 
-
     if (!req.file) {
       req.flash("error", "Please upload a listing image.");
       return res.redirect("/listings/new");
+    }
+
+    const userLocation = req.body.listing.location;
+    let geometry = { type: "Point", coordinates: [0, 0] };
+
+    try {
+      const geoRes = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(userLocation)}&limit=1`, {
+        headers: { "User-Agent": "WanderLust/1.0" },
+      });
+      const geoData = await geoRes.json();
+
+      if (geoData.length > 0) {
+        geometry = {
+          type: "Point",
+          coordinates: [parseFloat(geoData[0].lon), parseFloat(geoData[0].lat)],
+        };
+      }
+    } catch (err) {
+      console.log("Geocoding failed, saving listing with default coordinates:", err.message);
     }
 
     let url = req.file.path; 
@@ -60,7 +62,7 @@ const geoData = await geoRes.json();
    const newListing = new Listing(req.body.listing); 
   // console.log(req.user); 
 
-   newListing.geometry = response.body.features[0]?.geometry || { type: "Point", coordinates: [0, 0] };
+   newListing.geometry = geometry;
 
    newListing.owner = req.user._id; 
    newListing.image = {url, filename};  
@@ -80,8 +82,8 @@ module.exports.renderEditForm = async (req, res) => {
         req.flash("error", "Listing you requested for does not exist!");  
         return res.redirect("/listings"); 
     }
-    let originalImageUrl = listing.image.url; 
-    originalImageUrl = originalImageUrl.replace("/upload", "/upload/h_150,w_150"); 
+    let originalImageUrl = listing.image?.url || "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=800&q=60";
+    originalImageUrl = originalImageUrl.replace("/upload", "/upload/h_180,w_260,c_fill"); 
 
     res.render("listings/edit.ejs", { listing, originalImageUrl }); 
 };  
@@ -90,7 +92,12 @@ module.exports.renderEditForm = async (req, res) => {
 
 module.exports.updateListing = async (req, res) => {
     let {id} = req.params; 
-    let listing = await Listing.findByIdAndUpdate(id, {...req.body.listing}); 
+    let listing = await Listing.findByIdAndUpdate(id, {...req.body.listing}, {new: true, runValidators: true}); 
+
+    if(!listing) {
+      req.flash("error", "Listing you requested for does not exist!");
+      return res.redirect("/listings");
+    }
 
     if(typeof req.file !== "undefined") {
     let url = req.file.path; 

@@ -61,10 +61,11 @@
             <div class="invalid-feedback">Please enter a valid price</div>
           </div>
           <div class="mb-3 col-md-8">
-            <label for="location" class="form-label">Location</label>
+            <label for="location" class="form-label">Location / City</label>
             <input
+              id="location"
               name="listing[location]"
-              placeholder="jaipur, rajasthan"
+              placeholder="Jaipur, Rajasthan"
               type="text"
               class="form-control"
               required
@@ -75,8 +76,9 @@
         <div class="mb-3">
           <label for="country" class="form-label">Country</label>
           <input
+            id="country"
             name="listing[country]"
-            placeholder="india"
+            placeholder="India"
             type="text"
             class="form-control"
             required

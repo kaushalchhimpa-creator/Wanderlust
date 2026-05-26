@@ -8,6 +8,10 @@
   <div class="row mt-3"> 
     <div class="col-12 col-lg-8 offset-lg-2">
       <h3><%= listing.title %></h3>
+      <div class="show-location-line">
+        <span><i class="fa-solid fa-location-dot"></i> <%= listing.location || "Location not added" %></span>
+        <span><i class="fa-solid fa-globe"></i> <%= listing.country || "Country not added" %></span>
+      </div>
     </div>
 
     <div class="card col-12 col-lg-8 offset-lg-2 show-card listing-card">
@@ -19,9 +23,20 @@
       <div class="card-body">
         <p class="card-text"> Owned by <i><%= listing.owner.username %></i> </p>
         <p class="card-text">   <%= listing.description %>  </p>
-        <p class="card-text"> &#8377; <%= listing.price.toLocaleString("en-IN") %> </p>
-        <p class="card-text">  <%= listing.location %> </p>
-        <p class="card-text"> <%= listing.country %> </p>
+        <div class="show-detail-grid">
+          <div>
+            <span>Price</span>
+            <strong>&#8377; <%= listing.price.toLocaleString("en-IN") %></strong>
+          </div>
+          <div>
+            <span>Location</span>
+            <strong><%= listing.location || "Not added" %></strong>
+          </div>
+          <div>
+            <span>Country</span>
+            <strong><%= listing.country || "Not added" %></strong>
+          </div>
+        </div>
       </div> 
     </div>
     <br />  

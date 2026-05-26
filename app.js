@@ -22,7 +22,7 @@ const passport = require("passport");
 const LocalStrategy = require("passport-local"); 
 const User = require("./models/user.js"); 
 
-
+ 
 
 const listingsRouter = require("./routes/listing.js");  
 const reviewsRouter = require("./routes/review.js"); 
@@ -36,8 +36,8 @@ app.engine('ejs', ejsMate);
 app.use(express.static(path.join(__dirname,"/public"))); 
 
 
+//const dbUrl = process.env.ATLASDB_URL;  
 const dbUrl = process.env.ATLASDB_URL;  
-//const dbUrl = process.env.MONGO_URL;  
 
 const store = MongoStore.create({
     mongoUrl: dbUrl,
