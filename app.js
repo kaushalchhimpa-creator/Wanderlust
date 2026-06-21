@@ -169,14 +169,12 @@ async function main() {
 
 app.use("/listings", listingsRouter);
 app.use("/listings/:id/reviews", reviewsRouter);
-app.use("/", userRouter);
 
-// root -> redirect to listings index
 app.get('/', (req, res) => {
-    res.redirect('/listings');
+    return res.redirect('/listings');
 });
 
-
+app.use("/", userRouter);
 
 
 
