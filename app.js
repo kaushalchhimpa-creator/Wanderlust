@@ -88,7 +88,7 @@ app.use((req, res, next) => {
     res.locals.success = req.flash("success"); 
    // console.log(res.locals.success); 
    res.locals.error = req.flash("error"); 
-   res.locals.currUser = req.user; 
+   res.locals.currUser = req.user || null; 
     next(); 
 }); 
 
@@ -263,9 +263,9 @@ app.get("/listing/find", async (req, res) => {
 // //      if(!newListing.location) {
 // //     throw new ExpressError(400, "location is missing"); 
 // //    }
-//    await newListing.save();
-//    res.redirect("/listings"); 
-//     })
+//     await newListing.save();
+//     res.redirect("/listings"); 
+//      })
 // );     
 
 
@@ -377,12 +377,4 @@ app.use((err, req, res, next) => {
 
 app.listen(8080, () => {
     console.log("server is listening to port 8080"); 
-}); 
-
-
-
-
-
-
-
-
+});  
