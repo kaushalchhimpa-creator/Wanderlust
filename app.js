@@ -97,8 +97,6 @@ app.use((req, res, next) => {
 
 // don't redeclare dbUrl here; already defined above
 
-
-// Log which DB is being used (masked for security)
 const dbSource = dbUrl.includes("@") 
   ? "Atlas (Cloud)" 
   : "Local MongoDB";
