@@ -70,7 +70,7 @@ module.exports.createListing = async (req, res, next) => {
    let savedListing = await newListing.save();
    console.log(savedListing); 
    req.flash("success", "new Listing Created!"); 
-   return res.redirect("/listings"); 
+   return res.redirect("/listings"); // 🟢 Yeh return hona zaroori hai
 };   
 
 
@@ -107,7 +107,7 @@ module.exports.updateListing = async (req, res) => {
     }
 
     req.flash("success", "Listing Updated!"); 
-    return res.redirect(`/listings/${id}`);  
+    return res.redirect(`/listings/${id}`);   // 🟢 Yeh return hona zaroori hai
 }; 
 
 
@@ -116,5 +116,5 @@ module.exports.destroyListing = async (req, res) => {
     let {id} = req.params; 
     await Listing.findByIdAndDelete(id); 
     req.flash("success", "Listing Deleted");  
-    return res.redirect("/listings"); 
+    return res.redirect("/listings"); // 🟢 Yeh return hona zaroori hai
 };
