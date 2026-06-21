@@ -98,15 +98,31 @@ app.use((req, res, next) => {
 // don't redeclare dbUrl here; already defined above
 
 
+// Log which DB is being used (masked for security)
+const dbSource = dbUrl.includes("@") 
+  ? "Atlas (Cloud)" 
+  : "Local MongoDB";
+console.log(`📦 Using: ${dbSource}`);
+console.log(`🔗 DB URL: ${dbUrl.substring(0, 30)}...`);
+
 main()
 .then(() => {
-    console.log("connected to DB"); 
+    console.log("✅ Connected to DB successfully"); 
 })
-.catch(err => console.log(err));
+.catch(err => {
+    console.error("❌ DB Connection Error:");
+    console.error(err.message || err);
+    if (err.message.includes("authentication failed")) {
+        console.error("\n⚠️  Check your ATLASDB_URL credentials in .env");
+        console.error("   1. Verify username and password");
+        console.error("   2. If password has special chars, URL-encode them: https://www.urlencoder.org/");
+        console.error("   3. Check IP whitelist in Atlas Network Access");
+    }
+});
 
 
 async function main() {
-  await mongoose.connect(dbUrl); 
+  await mongoose.connect(dbUrl);
 }
 
 
