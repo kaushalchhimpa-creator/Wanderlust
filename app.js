@@ -204,10 +204,10 @@ app.get("/listing/find", async (req, res) => {
         }
 
         // Matched data ko find.ejs page par bhej rahe hain
-        res.render("listings/find.ejs", { allListings, q });
+        return res.render("listings/find.ejs", { allListings, q });
     } catch (err) {
         console.log(err);
-        res.status(500).send("Server Error");
+        return res.status(500).send("Server Error");
     }
 });
  
@@ -238,7 +238,7 @@ app.get("/listing/find", async (req, res) => {
 
 // //new route
 // app.get("/listings/new", async (req, res) => {
-//     res.render("listings/new.ejs"); 
+//      res.render("listings/new.ejs"); 
 // }); 
 
 
@@ -263,7 +263,7 @@ app.get("/listing/find", async (req, res) => {
 //     // let result = listingSchema.validate(req.body);  
 //     // console.log(result); 
 //     // if(result.error) {
-//     //     throw new ExpressError(400, result.error); 
+//     //      throw new ExpressError(400, result.error); 
 //     // }
 
 

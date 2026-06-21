@@ -5,7 +5,7 @@ module.exports.index = async (req, res) => {
     // .then( res => {
     //     console.log(res); 
     // }); 
-   res.render("listings/index.ejs", {allListening}); 
+   return res.render("listings/index.ejs", {allListening});
 }; 
 
 
@@ -20,7 +20,7 @@ module.exports.showListing = async (req, res) => {
     let {id} = req.params; 
     const listing =  await Listing.findById(id).populate({path: "reviews", populate: {path: "author"},}).populate("owner"); 
     if(!listing) {
-        req.flash("error", "Listing you requested for does not exist!");  
+        req.flash("error", "Listing you requested for does not exist!");   
         return res.redirect("/listings"); 
     }
     console.log(listing); 
@@ -70,8 +70,8 @@ module.exports.createListing = async (req, res, next) => {
    let savedListing = await newListing.save();
    console.log(savedListing); 
    req.flash("success", "new Listing Created!"); 
-   res.redirect("/listings"); 
-};  
+   return res.redirect("/listings"); 
+};   
 
 
 
@@ -79,14 +79,14 @@ module.exports.renderEditForm = async (req, res) => {
     let {id} = req.params; 
     const listing =  await Listing.findById(id); 
      if(!listing) {
-        req.flash("error", "Listing you requested for does not exist!");  
+        req.flash("error", "Listing you requested for does not exist!");   
         return res.redirect("/listings"); 
     }
     let originalImageUrl = listing.image?.url || "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=800&q=60";
     originalImageUrl = originalImageUrl.replace("/upload", "/upload/h_180,w_260,c_fill"); 
 
     res.render("listings/edit.ejs", { listing, originalImageUrl }); 
-};  
+};   
 
 
 
@@ -107,7 +107,7 @@ module.exports.updateListing = async (req, res) => {
     }
 
     req.flash("success", "Listing Updated!"); 
-    res.redirect(`/listings/${id}`);  
+    return res.redirect(`/listings/${id}`);  
 }; 
 
 
@@ -116,8 +116,5 @@ module.exports.destroyListing = async (req, res) => {
     let {id} = req.params; 
     await Listing.findByIdAndDelete(id); 
     req.flash("success", "Listing Deleted");  
-    res.redirect("/listings");  
-}; 
-
-
-
+    return res.redirect("/listings"); 
+};
