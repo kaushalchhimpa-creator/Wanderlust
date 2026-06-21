@@ -16,7 +16,6 @@ const ExpressError = require("./utils/ExpressError.js");
 //const { listingSchema, reviewSchema } = require("./schema.js"); 
 //const Review = require("./models/review.js"); 
 const session = require('express-session');
-const { MongoStore } = require('connect-mongo'); 
 const flash = require("connect-flash"); 
 const passport = require("passport"); 
 const LocalStrategy = require("passport-local"); 
@@ -36,26 +35,29 @@ app.engine('ejs', ejsMate);
 app.use(express.static(path.join(__dirname,"/public"))); 
 
 
-//const dbUrl = process.env.ATLASDB_URL;  
-const dbUrl = process.env.ATLASDB_URL;  
+// DATABASE CONFIGURATION: prefer cloud DB, then MONGO_URL, then local fallback
+const LOCAL_MONGO = "mongodb://127.0.0.1:27017/wanderlust";
+const dbUrl = process.env.ATLASDB_URL || process.env.MONGO_URL || LOCAL_MONGO;
 
-const store = MongoStore.create({
+// SESSION STORE CONFIGURATION
+const MongoStore = require('connect-mongo').default;
+
+const store = new MongoStore({
     mongoUrl: dbUrl,
     crypto: {
-        secret: process.env.SECRET, 
+        secret: process.env.SECRET || "mysupersecretlocalfallback",
     },
     touchAfter: 24 * 3600,
 });
 
-
 store.on("error", (err) => {
-    console.log("ERROR in MONGO SESSION STORE", err); 
-}); 
+    console.log("ERROR in MONGO SESSION STORE", err);
+});
 
 
 const sessionOptions = {
     store,
-    secret: process.env.SECRET, 
+    secret: process.env.SECRET || "mysupersecretlocalfallback", 
     resave: false,
     saveUninitialized: true,
     cookie: {
@@ -83,7 +85,7 @@ passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
 
 
-
+// Saare routes ke upar user middleware hamesha rahega
 app.use((req, res, next) => {
     res.locals.success = req.flash("success"); 
    // console.log(res.locals.success); 
@@ -93,8 +95,7 @@ app.use((req, res, next) => {
 }); 
 
 
-//const MONGO_URL = "mongodb://127.0.0.1:27017/wanderlust"; 
-// const dbUrl = process.env.ATLASDB_URL; 
+// don't redeclare dbUrl here; already defined above
 
 
 main()
@@ -152,9 +153,14 @@ async function main() {
 //--------------------------------------//
 
 
-app.use("/listings", listingsRouter); 
-app.use("/listings/:id/reviews", reviewsRouter);    
-app.use("/", userRouter);  
+app.use("/listings", listingsRouter);
+app.use("/listings/:id/reviews", reviewsRouter);
+app.use("/", userRouter);
+
+// root -> redirect to listings index
+app.get('/', (req, res) => {
+    res.redirect('/listings');
+});
 
 
 
@@ -309,11 +315,11 @@ console.log();
 //Post Route
 // app.post("/listings/:id/reviews", validateReview, wrapAsync( async (req, res) => {
 //     let listing = await Listing.findById(req.params.id); 
-//     let newReview = new Review(req.body.review); 
-//    // console.log(newReview); 
+//     let nleReview = new Review(req.body.review); 
+//    // console.log(nleReview); 
 
-//     listing.reviews.push(newReview); 
-//     await newReview.save(); 
+//     listing.reviews.push(nleReview); 
+//     await nleReview.save(); 
 //     await listing.save(); 
 
 //     console.log("new review saved"); 
@@ -342,7 +348,7 @@ console.log();
 //--------------------------------------------------//
 // app.get("/testListing", async (req, res) => {
 //  let sampleListing = new Listing({
-//     title: "my new villa",
+//     title: "my nle villa",
 //     description: "by the beach",
 //     image: "",
 //     price: 1200,
