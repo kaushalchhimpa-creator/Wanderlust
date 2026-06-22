@@ -3,8 +3,10 @@
 Wanderlust is a feature-rich, full-stack web application designed to simulate an Airbnb-like accommodation exploration and booking platform.
 
 ## 🔗 Live URLs & Profiles
-* 🌐 **Live Application:** 
-* 💼 **LinkedIn Profile:** 
+* 🌐 **Live Application:** first-project-deploy-5jbt.onrender.com
+* 💼 **LinkedIn Profile:** www.linkedin.com/in/
+kaushal-chhimpa07
+
 
 ## 🛠️ Key Features
 * **User Lifecycle (Auth):** Secure Sign-up, Log-in, and Session tracking.
